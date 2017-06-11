@@ -1,22 +1,31 @@
+import lombok.Getter;
 import org.graphstream.graph.implementations.SingleGraph;
 
+import java.util.ArrayList;
+
+@Getter
 class DiagnosticStructure extends SingleGraph{
 
-    private Integer nodeNumber;
+    static final Integer NODE_NUMBER = 5;
 
-    DiagnosticStructure(int nodeNumber){
+    private ArrayList<Node> nodes;
+
+    DiagnosticStructure(){
         super("Diagnostic Structure");
-        this.nodeNumber = nodeNumber;
+        this.nodes = new ArrayList<>();
         initialization();
     }
 
     private void initialization(){
         addNodes();
         addEdges();
+        for(Integer i = 0; i < NODE_NUMBER; i++){
+            nodes.add(new Node(i, this));
+        }
     }
 
     private void addNodes(){
-        for(Integer i = 0 ; i < nodeNumber ; i++){
+        for(Integer i = 0; i < NODE_NUMBER; i++){
             addNode(i.toString());
         }
     }

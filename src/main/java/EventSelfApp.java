@@ -1,14 +1,31 @@
+import javafx.application.Application;
+import javafx.concurrent.Task;
+import javafx.stage.Stage;
+import lombok.SneakyThrows;
 
-
-public class EventSelfApp {
+public class EventSelfApp extends Application{
 
     public static void main(String args[]) {
-        DiagnosticStructure diagnosticStructure = new DiagnosticStructure(5);
-//        diagnosticStructure.display();
+        launch(args);
+    }
+
+    @SneakyThrows
+    public void start(Stage theStage)
+    {
+        DiagnosticStructure diagnosticStructure = new DiagnosticStructure();
+
+        Task task = new Task<Void>() {
+            @SneakyThrows
+            @Override public Void call() {
+                new Timer(diagnosticStructure);
+                return null;
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+
+        diagnosticStructure.display();
+
     }
 }
-
-//Pobranie TESTED_BY
-//for (Iterator<Edge> edgeIterator = getNode(0).getEachEnteringEdge().iterator(); edgeIterator.hasNext();){
-//        System.out.println(edgeIterator.next().toString());
-//        }
