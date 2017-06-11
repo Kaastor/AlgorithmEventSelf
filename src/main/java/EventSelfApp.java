@@ -25,7 +25,7 @@ public class EventSelfApp extends Application{
         thread.setDaemon(true);
         thread.start();
 
-        diagnosticStructure.display();
+//        diagnosticStructure.display();
 
     }
 }
