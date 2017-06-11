@@ -1,0 +1,19 @@
+group 'pl.edu.wat.event-self'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    //GraphStream
+    compile group: 'org.graphstream', name: 'gs-core', version: '1.3'
+    //Lombok
+//    provided group: 'org.projectlombok', name: 'lombok', version: '1.16.6'
+
+}

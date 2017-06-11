@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AlgorithmEventSelf.iml" filepath="$PROJECT_DIR$/.idea/modules/AlgorithmEventSelf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AlgorithmEventSelf_main.iml" filepath="$PROJECT_DIR$/.idea/modules/AlgorithmEventSelf_main.iml" group="AlgorithmEventSelf" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AlgorithmEventSelf_test.iml" filepath="$PROJECT_DIR$/.idea/modules/AlgorithmEventSelf_test.iml" group="AlgorithmEventSelf" />
+    </modules>
+  </component>
+</project>
