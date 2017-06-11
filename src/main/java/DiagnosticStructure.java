@@ -21,6 +21,7 @@ class DiagnosticStructure extends SingleGraph{
         addEdges();
         for(Integer i = 0; i < NODE_NUMBER; i++){
             Node node = new Node(i, this);
+            if(i==0) node.setFailureFree(false);
             nodes.add(node);
         }
         for(Integer i = 0; i < NODE_NUMBER; i++){
