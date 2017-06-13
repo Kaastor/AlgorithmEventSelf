@@ -10,14 +10,16 @@ import java.util.Collections;
 @Getter @Setter
 class Node extends Thread{
 
+    int broadcastCounter = 0;
+
     private int nodeId;
     private ArrayList<Node> nodes;
     private DiagnosticStructure diagnosticStructure;
     private boolean failureFree = true;
 
-    private static double testingPeriod = 10000; //ms
-    private static long testingTime = 500;  //ms
-    private static long testResponseTime = 200; //ms
+    private static double testingPeriod = 5000; //ms
+    private static long failureResponseTime = 500;  //ms
+    private static long failureFreeResponseTime = 200; //ms
     private float internalTime;
 
     private ArrayList<Message> accusers;
@@ -59,16 +61,15 @@ class Node extends Thread{
     }
 
     void damaged(long responseTime){
-        testResponseTime = responseTime;
+        failureFreeResponseTime = responseTime;
     }
 
     void incrementTime(){
         internalTime+=1000;
         if(internalTime % testingPeriod == 0){
             work();
-            System.out.println(nodeId + " Moj chbuff: " + checkedBuffer);
-            System.out.println(nodeId + " Moj acc: " + accusers);
-            System.out.println(nodeId + " Moj en: " + entry);
+            System.out.println(nodeId + ", broadcastCounter: " + broadcastCounter + ", buffer: " + buffer);
+            System.out.println(nodeId + ", chBuffer: " + checkedBuffer );
         }
     }
 
@@ -80,14 +81,12 @@ class Node extends Thread{
 
     private boolean performTest(Integer node){
         boolean failureFree = true;
-        if(checkNodeCondition(node)){
+        if(isFailureFree(node)){
             checkMarkDiagnosticMessages(node);
             Message message = new Message(
                     new Information(this.nodeId, internalTime),
                     new Information(this.nodeId, internalTime),
                     new Information(node, 0));
-
-
             updateAndBroadcast(message);
         }
         else{
@@ -104,12 +103,11 @@ class Node extends Thread{
     }
 
     @SneakyThrows
-    private boolean checkNodeCondition(Integer node){
-        boolean response = nodes.get(node).isFailureFree();
-        if(response) Thread.sleep(testResponseTime);
-        else Thread.sleep(testingTime);
+    private boolean isFailureFree(Integer nodeId){
+        long responseTime = nodes.get(nodeId).testNode();
+        Thread.sleep(responseTime);
 
-        return response;
+        return (responseTime < failureResponseTime);
     }
 
     private void checkMarkDiagnosticMessages(Integer node){
@@ -154,9 +152,10 @@ class Node extends Thread{
     }
 
     private void broadcast(Message message){
+        broadcastCounter++;
         for(Integer node : testedBy){
             nodes.get(node).addToBuffer(message);
-            nodes.get(node).performTest(this.getNodeId()); // to dlatego jest 0 testuje 0
+            nodes.get(node).performTest(this.getNodeId());
         }
     }
 
@@ -164,4 +163,11 @@ class Node extends Thread{
         buffer.add(message);
     }
 
+    @SneakyThrows
+    private long testNode(){
+        if(failureFree)
+            return  failureFreeResponseTime;
+        else
+            return failureResponseTime;
+    }
 }

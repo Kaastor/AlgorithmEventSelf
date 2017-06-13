@@ -2,6 +2,7 @@ import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
+import org.graphstream.ui.view.Viewer;
 
 public class EventSelfApp extends Application{
 
@@ -25,7 +26,6 @@ public class EventSelfApp extends Application{
         thread.setDaemon(true);
         thread.start();
 
-//        diagnosticStructure.display();
-
+//        Viewer viewer = diagnosticStructure.display();
     }
 }
