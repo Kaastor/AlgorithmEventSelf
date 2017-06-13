@@ -68,22 +68,6 @@ class Node extends Thread{
         internalTime+=1000;
         if(internalTime % testingPeriod == 0){
             work();
-            System.out.println(nodeId + ", broadcastCounter: " + broadcastCounter + ", buffer: " + buffer);
-            System.out.println(nodeId + ", chBuffer: " + checkedBuffer );
-//            System.out.println();
-//            System.out.println(nodeId + " A: ");
-//            for(int i = 0 ; i < accusers.size() ; i++){
-//                if(accusers.get(i) != null)
-//                System.out.print(accusers.get(i).getTested().getNodeNumber() + ", ");
-//                else System.out.print(", null ");
-//            }
-//            System.out.println();
-//            System.out.println(nodeId + " E:");
-//            for(int i = 0 ; i < entry.size() ; i++){
-//                if(entry.get(i) != null)
-//                    System.out.print(entry.get(i).getTested().getNodeNumber() + ", ");
-//                else System.out.print(", null ");
-//            }
         }
     }
 
@@ -91,6 +75,14 @@ class Node extends Thread{
         for(Integer node : testerOf){
             performTest(node);
         }
+
+        System.out.print("Id: " + nodeId + "| BroadcastCounter: " + broadcastCounter + "| Entry: ");
+        for(Message message : entry){
+            if(message != null)
+                System.out.print(message.getTested().getNodeNumber() + ", ");
+            else System.out.print(", null ");
+        }
+        System.out.println();
     }
 
     private boolean performTest(Integer node){

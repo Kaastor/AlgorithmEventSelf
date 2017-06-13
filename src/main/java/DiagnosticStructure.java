@@ -21,17 +21,19 @@ class DiagnosticStructure extends SingleGraph{
         addEdges();
         for(Integer i = 0; i < NODE_NUMBER; i++){
             Node node = new Node(i, this);
-            if(i==0) node.setFailureFree(false);
             nodes.add(node);
         }
+        System.out.println(" Initializing... ");
         for(Integer i = 0; i < NODE_NUMBER; i++){
             nodes.get(i).work();
         }
+        System.out.println(" Network initialized... ");
     }
 
     private void addNodes(){
         for(Integer i = 0; i < NODE_NUMBER; i++){
             addNode(i.toString());
+            getNode(i.toString()).addAttribute("ui.label", i.toString());
         }
     }
 

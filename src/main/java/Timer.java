@@ -9,6 +9,7 @@ class Timer{
 
     private static final int second = 1000;
     private ArrayList<Node> nodes;
+    private float internalTime;
 
     Timer(DiagnosticStructure diagnosticStructure) {
         this.nodes = diagnosticStructure.getNodes();
@@ -20,6 +21,16 @@ class Timer{
     private void handle() {
         for(Node node : nodes){
             node.incrementTime();
+        }
+        internalTime+=1000;
+
+        if(internalTime == 15000){
+            System.out.println("\nNode 0 broke!");
+            nodes.get(0).setFailureFree(false);
+        }
+        if(internalTime == 30000){
+            System.out.println("\nNode 1 broke!");
+            nodes.get(1).setFailureFree(false);
         }
     }
 }

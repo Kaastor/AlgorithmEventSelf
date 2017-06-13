@@ -7,6 +7,8 @@ import org.graphstream.ui.view.Viewer;
 public class EventSelfApp extends Application{
 
     public static void main(String args[]) {
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+
         launch(args);
     }
 
@@ -14,6 +16,8 @@ public class EventSelfApp extends Application{
     public void start(Stage theStage)
     {
         DiagnosticStructure diagnosticStructure = new DiagnosticStructure();
+
+        graphVisualisation(diagnosticStructure);
 
         Task task = new Task<Void>() {
             @SneakyThrows
@@ -25,7 +29,22 @@ public class EventSelfApp extends Application{
         Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
+    }
 
-//        Viewer viewer = diagnosticStructure.display();
+    private void graphVisualisation(DiagnosticStructure diagnosticStructure){
+        String styleSheet="node {"+
+                " fill-color: grey;"+
+                " size: 30px;"+
+                " stroke-mode: plain;"+
+                " stroke-color: black;"+
+                " stroke-width: 1px;"+
+                "}"+
+                "node.important {"+
+                " fill-color: red;"+
+                " size: 30px;"+
+                "}";
+        diagnosticStructure.addAttribute("ui.stylesheet", styleSheet);
+        diagnosticStructure.addAttribute("ui.quality");
+        Viewer viewer = diagnosticStructure.display();
     }
 }
