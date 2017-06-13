@@ -70,6 +70,20 @@ class Node extends Thread{
             work();
             System.out.println(nodeId + ", broadcastCounter: " + broadcastCounter + ", buffer: " + buffer);
             System.out.println(nodeId + ", chBuffer: " + checkedBuffer );
+//            System.out.println();
+//            System.out.println(nodeId + " A: ");
+//            for(int i = 0 ; i < accusers.size() ; i++){
+//                if(accusers.get(i) != null)
+//                System.out.print(accusers.get(i).getTested().getNodeNumber() + ", ");
+//                else System.out.print(", null ");
+//            }
+//            System.out.println();
+//            System.out.println(nodeId + " E:");
+//            for(int i = 0 ; i < entry.size() ; i++){
+//                if(entry.get(i) != null)
+//                    System.out.print(entry.get(i).getTested().getNodeNumber() + ", ");
+//                else System.out.print(", null ");
+//            }
         }
     }
 
@@ -91,7 +105,7 @@ class Node extends Thread{
         }
         else{
             failureFree = false;
-            discordDiagnosticMessages(node);
+            discardDiagnosticMessages(node);
             Message message = new Message(
                     null,
                     new Information(nodeId, internalTime),
@@ -111,28 +125,26 @@ class Node extends Thread{
     }
 
     private void checkMarkDiagnosticMessages(Integer node){
-        for(Message message : buffer){
+        for(Message message : new ArrayList<>(buffer)){
             if(message.getInformation(0) == null){
-                if( message.getInformation(1).getNodeNumber() == node)
-                    checkedBuffer.add(message);
+                    failureMessageProcess(message);
+                    buffer.remove(message);
             }
             else if(message.getInformation(0).getNodeNumber() == node){
-                checkedBuffer.add(message);
+                entryMessageProcess(message);
+                buffer.remove(message);
             }
         }
-        buffer.removeAll(checkedBuffer);
     }
 
-    private void discordDiagnosticMessages(Integer node){
-        ArrayList<Message> removeTemp = new ArrayList<>();
-        for(Message message : buffer) {
+    private void discardDiagnosticMessages(Integer node){
+        for(Message message : new ArrayList<>(buffer)) {
             if (message.getInformation(0) == null) {
                 if (message.getInformation(1).getNodeNumber() == node)
-                    removeTemp.add(message);
+                    buffer.remove(message);
             } else if (message.getInformation(0).getNodeNumber() == node)
-                removeTemp.add(message);
+                buffer.remove(message);
         }
-        buffer.removeAll(removeTemp);
     }
 
     private void updateAndBroadcast(Message message){
@@ -154,13 +166,33 @@ class Node extends Thread{
     private void broadcast(Message message){
         broadcastCounter++;
         for(Integer node : testedBy){
-            nodes.get(node).addToBuffer(message);
+            nodes.get(node).getBuffer().add(message);
             nodes.get(node).performTest(this.getNodeId());
         }
     }
 
-    private void addToBuffer(Message message){
-        buffer.add(message);
+    private void failureMessageProcess(Message message){
+        if(this.testerOf.contains(message.getTested().getNodeNumber())){
+            if(performTest(message.getTested().getNodeNumber())){
+                updateAndBroadcast(new Message(
+                        new Information(this.nodeId, internalTime),
+                        new Information(message.getTester().getNodeNumber(), message.getTester().getTime()),
+                        new Information(message.getTested().getNodeNumber(), 0)));
+            }
+            else{
+                updateAndBroadcast(message);
+            }
+        }
+        else {
+            updateAndBroadcast(message);
+        }
+    }
+
+    private void entryMessageProcess(Message message){
+        updateAndBroadcast(new Message(
+                new Information(this.nodeId, internalTime),
+                new Information(message.getTester().getNodeNumber(), message.getTester().getTime()),
+                new Information(message.getTested().getNodeNumber(), 0)));
     }
 
     @SneakyThrows
