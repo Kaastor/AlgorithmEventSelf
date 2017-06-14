@@ -77,14 +77,6 @@ class Node extends Thread{
         for(Integer node : testerOf){
             performTest(node);
         }
-
-        System.out.print("Id: " + nodeId + "| BroadcastCounter: " + broadcastCounter + "| Entry: ");
-        for(Message message : entry){
-            if(message != null)
-                System.out.print(message.getTested().getNodeNumber() + ", ");
-            else System.out.print(", null ");
-        }
-        System.out.println();
     }
 
     private boolean performTest(Integer node){
@@ -198,10 +190,12 @@ class Node extends Thread{
     }
 
     void nodeEntry(){
-        initialization();
-        entryRequest();
-        for (Integer node: testerOf) {
-            performTest(node);
+        if(!this.failureFree) {
+            initialization();
+            entryRequest();
+            for (Integer node : testerOf) {
+                performTest(node);
+            }
         }
     }
 
@@ -214,5 +208,15 @@ class Node extends Thread{
                 accusers.addAll(nodes.get(node).getAccusers());
             }
         }
+    }
+
+    void diagnosis() {
+        System.out.print("Time[ms]: " + internalTime + "| Id: " + nodeId + "| BroadcastCounter: " + broadcastCounter + "| Entry: ");
+        for (Message message : entry) {
+            if (message != null)
+                System.out.print(message.getTested().getNodeNumber() + " ");
+            else System.out.print(" null ");
+        }
+        System.out.println();
     }
 }
