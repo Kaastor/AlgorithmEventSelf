@@ -8,7 +8,7 @@ import java.util.ArrayList;
 class Timer{
 
     private static final int second = 1000;
-    private ArrayList<Node> nodes;
+    private final ArrayList<Node> nodes;
 
     Timer(DiagnosticStructure diagnosticStructure) {
         this.nodes = diagnosticStructure.getNodes();

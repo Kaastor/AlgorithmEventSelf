@@ -8,7 +8,7 @@ class DiagnosticStructure extends SingleGraph{
 
     static final Integer NODE_NUMBER = 5;
 
-    private ArrayList<Node> nodes;
+    private final ArrayList<Node> nodes;
 
     DiagnosticStructure(){
         super("Diagnostic Structure");

@@ -26,8 +26,8 @@ class Node extends Thread{
     private ArrayList<Message> buffer;
     private ArrayList<Message> checkedBuffer;
 
-    private ArrayList<Integer> testerOf; //wychodzace
-    private ArrayList<Integer> testedBy; //wchodzace
+    private ArrayList<Integer> testerOf;
+    private ArrayList<Integer> testedBy;
 
     Node(int id, DiagnosticStructure diagnosticStructure){
         this.nodeId = id;
@@ -193,9 +193,9 @@ class Node extends Thread{
         if(!this.failureFree) {
             initialization();
             entryRequest();
-//            for (Integer node : testerOf) {
-//                performTest(node);
-//            }
+            for (Integer node : testerOf) {
+                performTest(node);
+            }
         }
     }
 
