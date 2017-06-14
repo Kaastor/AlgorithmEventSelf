@@ -67,11 +67,11 @@ public class EventSelfApp extends Application{
         Button repairThirdNodeButton = new Button();
         repairThirdNodeButton.setText("Napraw węzeł 3");
         repairThirdNodeButton.setOnAction( (event) -> {
-            if(!diagnosticStructure.getNodes().get(0).isFailureFree()) {
+            if(!diagnosticStructure.getNodes().get(3).isFailureFree()) {
                 diagnosticStructure.getNodes().get(3).nodeEntry();
                 System.out.println("\nWęzeł 3 został naprawiony!\n");
             }
-        } );
+        });
 
         GridPane root = new GridPane();
         root.setPadding(new Insets(10, 10, 10, 10));

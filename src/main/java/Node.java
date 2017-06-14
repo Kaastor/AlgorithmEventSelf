@@ -10,17 +10,15 @@ import java.util.Collections;
 @Getter @Setter
 class Node extends Thread{
 
-
-
     private int nodeId;
     private ArrayList<Node> nodes;
     private DiagnosticStructure diagnosticStructure;
     private boolean failureFree;
     private int broadcastCounter;
 
-    private static double testingPeriod = 5000; //ms
-    private static long failureResponseTime = 500;  //ms
-    private static long failureFreeResponseTime = 200; //ms
+    private static double testingPeriod = 1000; //ms
+    private static long failureResponseTime = 50;  //ms
+    private static long failureFreeResponseTime = 10; //ms
     private float internalTime;
 
     private ArrayList<Message> accusers;
@@ -115,6 +113,7 @@ class Node extends Thread{
             if(message.getInformation(0) == null){
                     failureMessageProcess(message);
                     buffer.remove(message);
+
             }
             else if(message.getInformation(0).getNodeNumber() == node){
                 entryMessageProcess(message);
@@ -158,6 +157,7 @@ class Node extends Thread{
     }
 
     private void failureMessageProcess(Message message){
+        buffer.remove(message);
         if(this.testerOf.contains(message.getTested().getNodeNumber())){
             if(performTest(message.getTested().getNodeNumber())){
                 updateAndBroadcast(new Message(
@@ -193,19 +193,20 @@ class Node extends Thread{
         if(!this.failureFree) {
             initialization();
             entryRequest();
-            for (Integer node : testerOf) {
-                performTest(node);
-            }
+//            for (Integer node : testerOf) {
+//                performTest(node);
+//            }
         }
     }
 
     private void entryRequest(){
-        for( Integer node : testedBy){
-            if(performTest(node)){
+        for(Integer node : testedBy){
+            if(nodes.get(node).isFailureFree()){
                 entry.clear();
                 entry.addAll(nodes.get(node).getEntry());
                 accusers.clear();
                 accusers.addAll(nodes.get(node).getAccusers());
+                break;
             }
         }
     }
