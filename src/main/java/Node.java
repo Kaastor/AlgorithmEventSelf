@@ -10,12 +10,13 @@ import java.util.Collections;
 @Getter @Setter
 class Node extends Thread{
 
-    int broadcastCounter = 0;
+
 
     private int nodeId;
     private ArrayList<Node> nodes;
     private DiagnosticStructure diagnosticStructure;
-    private boolean failureFree = true;
+    private boolean failureFree;
+    private int broadcastCounter;
 
     private static double testingPeriod = 5000; //ms
     private static long failureResponseTime = 500;  //ms
@@ -38,11 +39,16 @@ class Node extends Thread{
         this.accusers = new ArrayList<>(Collections.nCopies(DiagnosticStructure.NODE_NUMBER, (Message) null));
         this.entry = new ArrayList<>(Collections.nCopies(DiagnosticStructure.NODE_NUMBER, (Message) null));
         this.buffer = new ArrayList<>();
+        initialization();
         this.checkedBuffer = new ArrayList<>();
-
         this.testerOf = new ArrayList<>();
         this.testedBy = new ArrayList<>();
         initializeTestingStructure();
+    }
+
+    private void initialization(){
+        broadcastCounter = 0;
+        failureFree = true;
     }
 
     private void initializeTestingStructure(){
@@ -58,10 +64,6 @@ class Node extends Thread{
             else
                 testerOf.add(edge.getTargetNode().getIndex());
         }
-    }
-
-    void damaged(long responseTime){
-        failureFreeResponseTime = responseTime;
     }
 
     void incrementTime(){
@@ -193,5 +195,24 @@ class Node extends Thread{
             return  failureFreeResponseTime;
         else
             return failureResponseTime;
+    }
+
+    void nodeEntry(){
+        initialization();
+        entryRequest();
+        for (Integer node: testerOf) {
+            performTest(node);
+        }
+    }
+
+    private void entryRequest(){
+        for( Integer node : testedBy){
+            if(performTest(node)){
+                entry.clear();
+                entry.addAll(nodes.get(node).getEntry());
+                accusers.clear();
+                accusers.addAll(nodes.get(node).getAccusers());
+            }
+        }
     }
 }
